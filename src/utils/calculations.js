@@ -25,6 +25,12 @@ export function parseWeightData(members, weights) {
     const currentWeight = history.length > 0 ? history[history.length - 1].weight : 0;
     const totalChange = history.length > 0 ? currentWeight - startingWeight : 0;
     
+    // BMI Calculations
+    const heightM = member.heightCm ? member.heightCm / 100 : 0;
+    const startingBmi = heightM > 0 ? startingWeight / (heightM * heightM) : 0;
+    const currentBmi = heightM > 0 ? currentWeight / (heightM * heightM) : 0;
+    const bmiChange = currentBmi - startingBmi;
+    
     // Weekly change represents the difference between the latest week and the previous week
     let weeklyChange = 0;
     if (history.length >= 2) {
@@ -37,7 +43,10 @@ export function parseWeightData(members, weights) {
       startingWeight,
       currentWeight,
       totalChange,
-      weeklyChange
+      weeklyChange,
+      startingBmi,
+      currentBmi,
+      bmiChange
     };
   });
 

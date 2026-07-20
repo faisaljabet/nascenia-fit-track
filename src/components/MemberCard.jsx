@@ -3,7 +3,17 @@ import { TrendingDown, TrendingUp, Minus } from 'lucide-react';
 import { formatWeight, formatDelta } from '../utils/formatters';
 
 export default function MemberCard({ member }) {
-  const { name, avatar, color, weightHistory, startingWeight, currentWeight, totalChange, weeklyChange } = member;
+  const { name, avatar, color, weightHistory, startingWeight, currentWeight, totalChange, weeklyChange, heightCm, startingBmi, currentBmi, bmiChange } = member;
+
+  // Determine BMI status details
+  const getBmiCategory = (bmi) => {
+    if (bmi < 18.5) return { label: 'Underweight', color: 'rgba(156, 163, 175, 1)', bg: 'rgba(156, 163, 175, 0.1)' };
+    if (bmi < 25.0) return { label: 'Normal', color: 'rgba(16, 185, 129, 1)', bg: 'rgba(16, 185, 129, 0.1)' };
+    if (bmi < 30.0) return { label: 'Overweight', color: 'rgba(245, 158, 11, 1)', bg: 'rgba(245, 158, 11, 0.1)' };
+    return { label: 'Obese', color: 'rgba(239, 68, 68, 1)', bg: 'rgba(239, 68, 68, 0.1)' };
+  };
+
+  const bmiInfo = getBmiCategory(currentBmi);
 
   // Determine badge type based on value
   const getDeltaBadge = (val) => {
@@ -183,6 +193,34 @@ export default function MemberCard({ member }) {
             Total Progress
           </span>
           {getDeltaBadge(totalChange)}
+        </div>
+
+        {/* Height */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+            Height
+          </span>
+          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', fontFamily: 'var(--font-display)' }}>
+            {heightCm} cm
+          </span>
+        </div>
+
+        {/* BMI Status */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+            BMI Status
+          </span>
+          <span style={{
+            fontSize: '0.75rem',
+            fontWeight: 750,
+            color: bmiInfo.color,
+            backgroundColor: bmiInfo.bg,
+            padding: '0.2rem 0.5rem',
+            borderRadius: '0.5rem',
+            border: `1px solid ${bmiInfo.color}25`
+          }}>
+            {currentBmi.toFixed(1)} ({bmiInfo.label})
+          </span>
         </div>
 
         {/* Starting Weight */}

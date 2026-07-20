@@ -1,0 +1,44 @@
+[
+  {
+    "id": "m1",
+    "name": "Mizanur Rahman",
+    "avatar": "MR",
+    "color": "#3b82f6"
+  },
+  {
+    "id": "m2",
+    "name": "Shafiqul Kader",
+    "avatar": "SK",
+    "color": "#10b981"
+  },
+  {
+    "id": "m3",
+    "name": "Reaz Towsif",
+    "avatar": "RT",
+    "color": "#8b5cf6"
+  },
+  {
+    "id": "m4",
+    "name": "Ishrat Swarna",
+    "avatar": "IS",
+    "color": "#f59e0b"
+  },
+  {
+    "id": "m5",
+    "name": "Faisal Nirjhor",
+    "avatar": "FN",
+    "color": "#ec4899"
+  },
+  {
+    "id": "m6",
+    "name": "Emam Hasan",
+    "avatar": "EM",
+    "color": "#76971d"
+  },
+  {
+    "id": "m7",
+    "name": "Wasi Ahmad",
+    "avatar": "WA",
+    "color": "#b91c1c"
+  }
+]

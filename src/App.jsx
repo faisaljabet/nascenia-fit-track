@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import membersData from './data/members.json';
 import weightsData from './data/weights.json';
 import { parseWeightData, calculateWeeklyWinner } from './utils/calculations';
+import { fetchSheetsData } from './utils/sheets';
 
 import Header from './components/Header';
 import WeeklyWinner from './components/WeeklyWinner';
@@ -12,11 +13,40 @@ export default function App() {
   // Theme state: dark (default) or light
   const [theme, setTheme] = useState('dark');
 
+  // Data state initialized with static JSON data for instant load
+  const [members, setMembers] = useState(membersData);
+  const [weights, setWeights] = useState(weightsData);
+  const [dataSource, setDataSource] = useState('local'); // 'local' | 'sheets' | 'fallback'
+
   // Initialize theme from localStorage or prefers-color-scheme
   useEffect(() => {
     const savedTheme = localStorage.getItem('fittrack-theme') || 'dark';
     setTheme(savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
+  }, []);
+
+  // Fetch live Google Sheets data at runtime if VITE_SPREADSHEET_ID is set
+  useEffect(() => {
+    const spreadsheetId = import.meta.env.VITE_SPREADSHEET_ID;
+    if (!spreadsheetId) {
+      console.log('No VITE_SPREADSHEET_ID environment variable set. Running on local cached data.');
+      return;
+    }
+
+    async function loadLiveData() {
+      try {
+        const { membersData: liveMembers, weightsData: liveWeights } = await fetchSheetsData(spreadsheetId);
+        setMembers(liveMembers);
+        setWeights(liveWeights);
+        setDataSource('sheets');
+        console.log('✓ Successfully synchronized dashboard with Google Sheets!');
+      } catch (err) {
+        console.error('Failed to synchronize with Google Sheets. Falling back to local cached data:', err);
+        setDataSource('fallback');
+      }
+    }
+
+    loadLiveData();
   }, []);
 
   // Toggle theme handler
@@ -29,8 +59,8 @@ export default function App() {
 
   // Parse weight database and identify winner
   const { parsedMembers, dates } = useMemo(() => {
-    return parseWeightData(membersData, weightsData);
-  }, []);
+    return parseWeightData(members, weights);
+  }, [members, weights]);
 
   const weeklyWinner = useMemo(() => {
     return calculateWeeklyWinner(parsedMembers, dates);
@@ -50,6 +80,7 @@ export default function App() {
         lastUpdatedDate={latestDate} 
         theme={theme} 
         toggleTheme={toggleTheme} 
+        dataSource={dataSource}
       />
 
       {/* Main Content Grid: Weekly Winner (left/top) + Chart (right) */}
